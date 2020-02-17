@@ -29,13 +29,7 @@ app.engine('html', require('ejs').renderFile);
 
 //Inicializa con parámetros de mi aplicación firebase
 const firebaseConfig = {
-    apiKey: "AIzaSyDhW2_6vxj3rW8VMOe4xS5NXRzm-hetS-o",
-    authDomain: "iotatrazabilidad.firebaseapp.com",
-    databaseURL: "https://iotatrazabilidad.firebaseio.com",
-    projectId: "iotatrazabilidad",
-    storageBucket: "iotatrazabilidad.appspot.com",
-    messagingSenderId: "321347367754",
-    appId: "1:321347367754:web:877b700cac9c7be1"
+    
   };
 firebase.initializeApp(firebaseConfig);
 

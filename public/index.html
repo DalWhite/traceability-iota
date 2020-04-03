@@ -4,38 +4,26 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>IOTA trazabilidad</title>
-
-    <!-- update the version number as needed
-    <script defer src="/__/firebase/6.1.0/firebase-app.js"></script>
-    
-    <script defer src="/__/firebase/6.1.0/firebase-auth.js"></script>
-    <script defer src="/__/firebase/6.1.0/firebase-database.js"></script>
-    <script defer src="/__/firebase/6.1.0/firebase-messaging.js"></script>
-    <script defer src="/__/firebase/6.1.0/firebase-storage.js"></script>
-    <script defer src="/__/firebase/init.js"></script>-->
     <link type="text/css" rel="stylesheet" href="/css/style.css">
-    <!--<script type="text/javascript" src="app.js"></script>-->
   </head>
   <body>
-    
-     <form id="formAuth" method="POST" action="/">
-      <div class="imgcontainer">
-        <img src="iota-logo.png" alt="Avatar" class="avatar">
+    <div id="large-header" class="large-header" style="position:fixed; top:0;left:0">
+      <canvas id="demo-canvas" style="position:fixed; top:0;left:0"></canvas>
+    </div>
+    <div class="formContainer" style="z-index:1;">
+        <form class="formLogin" id="formAuth" method="POST" action="/" autocomplete="off">
+          <a href="https://www.iota.org/">
+            <img src="iota-logo.png" alt="Avatar" class="logo">
+          </a>
+          <input id="user" type="text" placeholder="Enter Username" name="user" required >
+          <input id="pass" type="password" placeholder="Enter Password" name="pass" required >
+          <button type="submit" formaction="/register" >Register</button>
+          <button class="loginButton" type="submit" >Login</button>
+        </form>
       </div>
-      <div class="container">
-        <label for="user"><b>Username</b></label>
-        <input id="user" type="text" placeholder="Enter Username" name="user" required >
-        
-        <label for="pass"><b>Password</b></label>
-        <input id="pass" type="password" placeholder="Enter Password" name="pass" required >
-    
-        <button id="boton" type="submit" >Login</button>
-        
-      </div>
-    
-     
-    </form> 
 
-    
+      <script src="js/TweenLite.min.js"></script>
+      <script src="js/EasePack.min.js"></script>
+      <script src="js/Bg.js"></script>
   </body>
 </html>

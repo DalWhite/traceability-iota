@@ -10,22 +10,30 @@ You can run this project on your local development machine with nodejs installed
 
 Clone the repository and follow prerequisites
 
+Feel free to modify and create pull request and issues.
+
 ### Prerequisites
 
 ```
 - Nodejs v12.16.1.
-- Replace uploads directory in line 19 of file /public/app.js
+- npm 6.13.4
+- Replace uploads directory in line 19 of file /public/app.js to match your local path
 ```
 
 ## Deployment
 
-Inside cloned repository
+Inside cloned repository:
+
+Install dependencies
+````
+npm install
+````
+
+Run application
 
 ````
 cd public
 ````
-
-Run application
 
 ````
 node app.js
@@ -38,7 +46,5 @@ Logical aplication architecture:
 
 ![Image description](https://github.com/DalWhite/traceability-iota/blob/master/Architecture.png)
 
-## License
 
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
 

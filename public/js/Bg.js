@@ -126,12 +126,12 @@
                 } else if(Math.abs(getDistance(target, points[i])) < 20000) {
                     points[i].active = 0.1;
                     points[i].circle.active = 0.3;
-                } else if(Math.abs(getDistance(target, points[i])) < 40000) {
+                } else if(Math.abs(getDistance(target, points[i])) < 80000) {
                     points[i].active = 0.02;
                     points[i].circle.active = 0.1;
                 } else {
-                    points[i].active = 0;
-                    points[i].circle.active = 0;
+                    points[i].active = 0.01;
+                    points[i].circle.active = 0.1;
                 }
 
                 drawLines(points[i]);

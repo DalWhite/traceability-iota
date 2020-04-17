@@ -1,47 +1,92 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>trazabilidad login</title>
-    <link type="text/css" rel="stylesheet" href="/css/style.css">
-  </head>
-  <body>
-    <h1> Aplicación de trazabilidad mediante IOTA y MAM</h1>
-    <b>Bienvenido <%= name %></b>
-    
-    <br>
-    
-    <form action="/fileupload" method="post" enctype="multipart/form-data">
-      <b>Trazabilidad automática de fichero</b>
-      <div class="container"></div>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>IOTA Traceability</title>
+  <link type="text/css" rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+
+  <h1> Digiltal Asset Traceability</h1>
+  <h4>User: <%= name %></h4>
+
+  <div class="containerLeft">
+    <h3>Upload to TANGLE</h3>
+    <button onclick=FileShowHide()>Track File</button>
+    <button onclick=ManualShowHide()>Track Hash</button>
+
+    <div id="fileUploadContainer" class="animated">
+      <form action="/fileupload" method="post" enctype="multipart/form-data">
+        <div class="container"></div>
         <div class="upload-btn-wrapper">
-          <button class="btn">fichero a trazar</button>
+          <button class="btn">Upload</button>
           <input type="file" name="filetoupload" />
         </div>
         <br>
-        <input  type="submit" value="Enviar al tangle">
-      </div>
+        <input type="submit" value="Send">
+    </div>
     </form>
-    
-    <form action="/manupload" method="post">
-        <b>Trazabilidad manual con hash de activo</b>
+
+    <div id="manUploadContainer" class="animated">
+      <form action="/manupload" method="post">
+        <h4>Hash Tracebility</h4>
         <label for="docID"><b>docID</b></label>
-        <input id="docID" type="text" placeholder="ID del documento" name="docID" required>
+        <input id="docID" type="text" placeholder="Document Id" name="docID" required>
         <label for="Hash"><b>Hash</b></label>
         <input id="Hash" type="text" placeholder="Hash " name="Hash" required>
-        <input  type="submit" value="Enviar al tangle">    
-    </form>
+        <input type="submit" value="Send">
+      </form>
+    </div>
+
+  </div>
+
+  <div class="containerRight">
+    <h3>Retrieve from TANGLE</h3>
     <form action="/retrieve" method="post">
-      <b>Recuperación cadena de custodia</b>
       <label for="docID"><b>docID</b></label>
       <input id="docID" type="text" placeholder="ID del documento" name="docID" required>
+      <input type="submit" value="Retrieve">
+    </form>
+    <iframe height="70%" src=<%= mamExplorerLink %>>
+    </iframe>
+  </div>
+
+  <script>
+
+    var divFile, divManual;
+    
+    function FileShowHide(){
       
-      <input  type="submit" value="Recuperar del tangle">    
-  </form>
-  <iframe height="600" src=<%= mamExplorerLink %>>
-  </iframe>
-    
-    
-  </body>
+      var divFile = document.getElementById('fileUploadContainer');
+
+      if (divFile.style.display=="block"){
+        divFile.style.display="none";
+        divFile.style.opacity= 0;
+      }  
+      else{
+        divFile.style.display="block";
+        divFile.style.opacity= 1;
+      }
+    };
+
+    function ManualShowHide(){
+      
+      var divManual = document.getElementById('manUploadContainer');
+
+      if (divManual.style.display=="block"){
+        divManual.style.display="none";
+        divManual.style.opacity= 0;
+      }  
+      else{
+        divManual.style.display="block";
+        divManual.style.opacity= 1;
+      }
+    };
+  </script>
+
+</body>
+
 </html>

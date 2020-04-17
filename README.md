@@ -36,7 +36,7 @@ node app.js
 Logical aplication architecture:
 
 
-![Image description](link-to-image)
+![Image description](https://github.com/DalWhite/traceability-iota/blob/master/Architecture.png)
 
 ## License
 

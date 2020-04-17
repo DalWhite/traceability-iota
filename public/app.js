@@ -1,36 +1,39 @@
-//importa firebase lib
 var firebase = require('firebase');
 var express = require('express');
 var path= require('path');
-//body parser deprecated, usando formidable para file uploads
 var bodyParser= require('body-parser');
 var formidable = require('formidable');
 var fs = require('fs');
 const Mam = require('@iota/mam');
 const { asciiToTrytes, trytesToAscii } = require('@iota/converter')
-
 const crypto = require('crypto');
 
+//MAM Channel Mode
 const mode = 'restricted'
+//IOTA Public node address
 const provider = 'https://nodes.devnet.iota.org'
 
 var mamExplorerLink = 'https://mam-explorer.firebaseapp.com/'
- //console.log(`MAM Explorer:\n${mamExplorerLink}${readData.root}\n`); 
+
+//Local path, change with your server project path
+var uploadPath='/home/david/traceability-iota/uploads';
+
 var app = express();
 var readData;
-
 var urlencodedParser = bodyParser.urlencoded({ extended: true });
 app.use(express.static(__dirname));
 app.engine('html', require('ejs').renderFile);
 
-
-
-
-
-//Inicializa con parámetros de mi aplicación firebase
+//Firebase Initialization, Public Api Keys
 const firebaseConfig = {
-    
-  };
+  apiKey: "AIzaSyDhW2_6vxj3rW8VMOe4xS5NXRzm-hetS-o",
+  authDomain: "iotatrazabilidad.firebaseapp.com",
+  databaseURL: "https://iotatrazabilidad.firebaseio.com",
+  projectId: "iotatrazabilidad",
+  storageBucket: "iotatrazabilidad.appspot.com",
+  messagingSenderId: "321347367754",
+  appId: "1:321347367754:web:877b700cac9c7be1"
+};
 firebase.initializeApp(firebaseConfig);
 
 async function autenticacion(email,password){
@@ -73,7 +76,7 @@ async function creaUser(){
     });
 }
 
-/*parte de servidor express*/ 
+/*Express pages dispatcher*/ 
 
 app.post('/retrieve',urlencodedParser, async function (req, res) {
 
@@ -84,7 +87,7 @@ app.post('/retrieve',urlencodedParser, async function (req, res) {
   mamExplorerLink = `https://mam-explorer.firebaseapp.com/?provider=${encodeURIComponent(provider)}&mode=${mode}&key=${readData.secretKey.padEnd(81, '9')}&root=${readData.root}`
   console.log(`MAM Explorer:\n${mamExplorerLink}\n`); 
   var name=readData.email;
-  res.render(__dirname + '/login.html', {name:name, mamExplorerLink:mamExplorerLink});
+  res.render(__dirname + '/main.html', {name:name, mamExplorerLink:mamExplorerLink});
   }
  });
 
@@ -94,18 +97,14 @@ app.get('/', function (req, res) {
 
 app.post('/', urlencodedParser, async function (req, res) {
 
-  //res.sendFile(path.join(__dirname + '/login.html'));
   var email=req.body.user;
   var password=req.body.pass;
   var logedin= await autenticacion(email,password);
   
   if(logedin){
-    
-    //res.sendFile(path.join(__dirname + '/login.html'));
     var name = email;
-    res.render(__dirname + '/login.html', {name:name, mamExplorerLink:mamExplorerLink});
+    res.render(__dirname + '/main.html', {name:name, mamExplorerLink:mamExplorerLink});
   }else{
-    
     res.sendFile(path.join(__dirname + '/index.html'));
   }
 });
@@ -114,18 +113,17 @@ app.post('/fileupload', async function (req, res) {
   var docId
   var hash
   var newpath
-    
   var form = new formidable.IncomingForm();
 
   hash = await new Promise(function (resolve, reject) {
-  //recupera el fichero, lo mueve a uploads y calcula su hash
+  //Retrieves file, moves to uploads and calcs HASH
   form.parse(req, function (err, fields, files) {
     if (err) {
       reject(err);
       return;
     }
     var oldpath = files.filetoupload.path;
-    newpath = 'C:/Users/Alonn/Develope/WS UNIR/Prácticas/workspaceIOTA/uploads/' + files.filetoupload.name;
+    newpath = uploadPath + files.filetoupload.name;
     docId=files.filetoupload.name;
     docId= path.basename(newpath, '.txt'||'.docx'||'.*')
     console.log(docId);
@@ -175,13 +173,12 @@ app.post('/fileupload', async function (req, res) {
   
   if (existedocid){
     
-    var update = await updateUserData(mamState.channel.start,nextRoot,docId,hash);
+    await updateUserData(mamState.channel.start,nextRoot,docId,hash);
   }else{
-    console.log("aqui casca");
-    var escritura=await writeUserData(user.uid,user.email,docId,hash,mamState.channel.start,root,nextRoot,secretKey,mamState.seed);
+    await writeUserData(user.uid,user.email,docId,hash,mamState.channel.start,root,nextRoot,secretKey,mamState.seed);
     
   }
-  res.render(__dirname + '/login.html', {name:user.email, mamExplorerLink:mamExplorerLink});
+  res.render(__dirname + '/main.html', {name:user.email, mamExplorerLink:mamExplorerLink});
 });
 
 
@@ -215,17 +212,17 @@ app.post('/manupload', urlencodedParser,async function(req, res){
   
   if (existedocid){
     
-    var update = await updateUserData(mamState.channel.start,nextRoot,req.body.docID,req.body.Hash);
+    await updateUserData(mamState.channel.start,nextRoot,req.body.docID,req.body.Hash);
   }else{
-    var escritura=await writeUserData(user.uid,user.email,req.body.docID,req.body.Hash,mamState.channel.start,root,nextRoot,secretKey,mamState.seed);
+    await writeUserData(user.uid,user.email,req.body.docID,req.body.Hash,mamState.channel.start,root,nextRoot,secretKey,mamState.seed);
     
   }
-  res.render(__dirname + '/login.html', {name:user.email, mamExplorerLink:mamExplorerLink});
+  res.render(__dirname + '/main.html', {name:user.email, mamExplorerLink:mamExplorerLink});
   
 });
 
 app.listen(3000, function () {
-  console.log('iota trazabilidad, puerto 3000!');
+  console.log('IOTA Traceability, Port 3000!');
   console.log(__dirname);
 });
 
@@ -246,22 +243,19 @@ async function writeUserData(userId,  email, docId, hashsha256, index, root, nex
 
   })
   .then(function(){
-    console.log("test token");
-    
-  
   });
   return true;
 }
 
 async function readUserData(docId){
+  
   var user=firebase.auth().currentUser;
   var test;
   var lectura= firebase.database().ref('users/'+user.uid+'/'+docId);
+  
   await lectura.once('value',function(snapshot){
     test= snapshot.val();
-    
-    
-  }).then(function(){
+    }).then(function(){
   })
   .catch(function(error) {
     console.log(error);
@@ -271,6 +265,7 @@ async function readUserData(docId){
 }
 
 async function updateUserData(index,nextRoot,docId,Hash){
+
   var user=firebase.auth().currentUser;
   var actualiza= firebase.database().ref('users/'+user.uid);
   var updates={};
@@ -304,6 +299,7 @@ async function existeDocId(docId){
   return existe
 }
 
+/*
 async function hashFichero(filename,algorithm = 'sha256'){
   return new Promise((resolve, reject) => {
 
@@ -323,7 +319,7 @@ async function hashFichero(filename,algorithm = 'sha256'){
     }
   });
 
-}
+}*/
 
 async function inicializaMam(secretKey, seed, nextroot, index, isnew){
   
@@ -343,9 +339,7 @@ async function inicializaMam(secretKey, seed, nextroot, index, isnew){
 const publish = async(packet,mamState) => {
     // Create MAM Payload - STRING OF TRYTES
     const trytes = asciiToTrytes(JSON.stringify(packet))
-    //console.log("mamState subscribe con next root: "+JSON.stringify(mamState,null, 4));
     const message = Mam.create(mamState, trytes)
-    //console.log("mamState 2: "+JSON.stringify(mamState,null, 4));
     console.log("message: "+JSON.stringify(message.state,null, 4));
     // Save new mamState
     mamState = message.state 

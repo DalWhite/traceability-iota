@@ -5,6 +5,9 @@
 html{
   height: -webkit-fill-available;
 }
+iframe{
+  opacity: .7;
+}
 
 body{
   background-color: white;

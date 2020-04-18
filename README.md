@@ -39,6 +39,11 @@ cd public
 node app.js
 ````
 
+REGISTER NOT IMPLEMENTED, TEST USER:
+
+**usuario1@gmail.com**
+**usuario1**
+
 ## Arhitecture
 
 Logical aplication architecture:

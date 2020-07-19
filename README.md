@@ -1,4 +1,4 @@
-# Project Title
+# IOTA Traceability implementation
 
 Digital assets traceability using IOTA tech stack.
 
